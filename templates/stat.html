@@ -1,0 +1,93 @@
+<html><head>
+	<!--<meta http-equiv="cache-control" content="no-cache" />
+	<meta http-equiv="pragma" content="no-cache" />
+	<meta http-equiv="expires" content="0" />-->
+	<script src="http://d3js.org/d3.v3.min.js" charset="utf-8"></script>
+	<script src="http://ajax.googleapis.com/ajax/libs/jquery/1.11.1/jquery.min.js"></script>
+	<script type="text/javascript" async="" src="http://www.google-analytics.com/ga.js"></script>
+	<script type="text/javascript" src="http://janwillemtulp.com/d3linechart/d3-v1.8.2.js"></script>
+	<script type = 'text/javascript'>
+	// setTimeout(function () { location.reload(1); }, 5000);
+	</script>
+
+	<script language="javascript"
+      type="text/javascript"
+      src="/static/graph.js"></script>
+
+	<title>Monitor</title>
+
+	<style type="text/css">
+		path {
+		    stroke: steelblue;
+		    stroke-width: 2;
+		    fill: none;
+		}
+
+		line {
+		    stroke: black;
+		}
+
+		text {
+		    font-family: Arial;
+		    font-size: 9pt;
+		}
+	</style>
+	<script type="text/javascript">
+	  var _gaq = _gaq || [];
+	  _gaq.push(['_setAccount', 'UA-7015427-2']);
+	  _gaq.push(['_trackPageview']);
+
+	  (function() {
+		var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
+		ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
+		var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
+	  })();
+
+	</script>
+
+  </head>
+  <body>
+		
+
+<div id="graph" class="aGraph" style="position:absolute;top:0px;left:0; float:left;"></div>
+<div id='loc1'></div>
+<div id='loc2'></div>
+{% for chart in charts %}
+<h2>{{chart}}</h2>
+<div id='{{chart}}' class='chart'></div>
+{% endfor %}
+
+
+
+
+<script type="text/javascript">
+
+function decodeJSON(encodedJSON) {
+    var decodedJSON = $('<div/>').html(encodedJSON).text();
+    return $.parseJSON(decodedJSON);
+}
+$(document).ready(function(){
+
+var monitor_data = decodeJSON('{{ data }}');
+// var stats = [];
+// for(var i=0;i<dataset.length;i++){
+// 	var point = dataset[i];
+// 	stats.push(parseInt(point.stat))
+// }
+// console.log(monitor_data);
+// console.log(monitor_data.keys());
+var keys_list = Object.keys(monitor_data);
+for(var i=0;i<keys_list.length;i++){
+	key = Object.keys(monitor_data)[i]
+	data = monitor_data[key];
+	console.log(data);
+	draw_graph(data, key)
+}
+// draw_graph(dataset, 'asdf')efw
+// draw_graph(dataset, 'asdflaksjdf')
+
+});
+		
+	
+		</script>
+</body></html>
