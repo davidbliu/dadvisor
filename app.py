@@ -71,7 +71,9 @@ def get_container_metrics():
 	return render_template('stat.html', data = json.dumps(data), charts = charts)
 if __name__ == '__main__':
 	
-	host='localhost'
+	# host='localhost'
+	# host = socketimport urllib2
+	host = urllib2.urlopen('http://ip.42.pl/raw').read()
 
 	# os.system('printenv')
 	# host = socket.gethostbyname(socket.gethostname())
