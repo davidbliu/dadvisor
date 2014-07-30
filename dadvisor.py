@@ -1,7 +1,7 @@
 import os
 import time
 from random import randint
-import docker
+# import docker
 import pickle
 import threading
 root_dir = os.environ.get('CROOT')
