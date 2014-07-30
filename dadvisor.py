@@ -1,15 +1,12 @@
 import os
 import time
 from random import randint
-# import docker
+import docker
 import pickle
 import threading
 root_dir = os.environ.get('CROOT')
 if not root_dir:
 	root_dir = '/sys/fs'
-# docker_client = docker.Client(base_url='unix://var/run/docker.sock',
-#                   version='1.11',
-#                   timeout=10) 
 
 class StatsCollector:
 	def __init__(self):
@@ -42,14 +39,25 @@ def load_collector():
 	try:
 		collector = None
 		with open('stats_collector.pkl', 'rb') as input:
-				collector = pickle.load(input)
+			collector = pickle.load(input)
 		return collector
 	except Exception as failure:
 		print failure
 		return StatsCollector()
-
-
-
+#
+# gets docker ids from docker daemon
+#
+def get_docker_ids_with_daemon():
+	docker_client = docker.Client(base_url='unix://var/run/docker.sock',
+                  version='1.11',
+                  timeout=10) 
+	containers = docker_client.containers()
+	container_ids = map(lambda x: x['Id'], containers)
+	# print container_ids
+	return container_ids
+#
+# gets docker ids from roaming around in cgroups
+#
 def get_docker_ids(root_dir = '/sys/fs'):
 	# print 'monitoring'
 	docker_ids = []
@@ -88,8 +96,6 @@ def get_container_data(container_id, root_path = '/sys/fs' ):
 	cache_stat = int(cache_stat) + rand_i
 	user_cpuacct_stats = int(user_cpuacct_stats) + rand_i
 	system_cpuacct_stats = int(system_cpuacct_stats) + rand_i
-	# print them all
-	# print rss_stat, swap_stat, cache_stat, user_cpuacct_stats, system_cpuacct_stats
 	return {'rss_stat':int(rss_stat), 
 			'swap_stat':int(swap_stat),
 			'cache_stat':int(cache_stat), 
@@ -99,15 +105,11 @@ def get_container_data(container_id, root_path = '/sys/fs' ):
 
 def update_collector(root_path = '/sys/fs'):
 	collector = load_collector()
-	#
-	# get container ids
-	#
-	#
+	# 
 	# collect stats for each container and update collector
 	# 
-	containers = get_docker_ids(root_path)
+	containers = get_docker_ids_with_daemon()
 	for container_id in containers:
-		# container_id = str(container['Id'])
 		container_data = get_container_data(container_id, root_path)
 		c_stat = collector.container_stats.get(container_id)
 		if c_stat is None:
@@ -139,23 +141,22 @@ def collect():
 		update_collector(root_dir)
 		collector = load_collector()
 		collector.clean()
-		# containers = collector.container_stats.keys()
-		# if containers:
-		# 	for c in containers:
-		# 		print collector.container_stats[c].stats
 		time.sleep(5)
+		# 
+		# TODO variable collect interval
+		# 
 
 class ThreadClass(threading.Thread):
 	def run(self):
 		print 'thread is starting to collect data'
 		print 'collecting on this root '+str(root_dir)
 		collect()
-		# global_good+=result[0]
-		# global_bad+=result[1]
+
 	
 def threaded_collect():
 	t=ThreadClass()
 	t.daemon=True
 	t.start()
 if __name__ == "__main__":
-	collect()
+	# collect()
+	get_docker_ids_with_daemon()

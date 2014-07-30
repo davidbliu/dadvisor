@@ -1,25 +1,18 @@
 function draw_graph(stats,name){
 	var data = stats,
-	w = 400,
+	w = 300,
 	h = 200,
 	margin = 20,
 	y = d3.scale.linear().domain([d3.min(data), d3.max(data)]).range([0 + margin, h - margin]),
 	x = d3.scale.linear().domain([0, data.length]).range([0 + margin, w - margin])
 
-	var first_name = name.split("::")[0];
-	console.log(first_name);
-	var select_string = '#'+first_name;
-	$('.chart').each(function(){
-		console.log($(this).attr('id'));
-	});
-	var vis = d3.select('body')
+	var first_name = 'container_'+name.split("::")[0];
+	var vis = d3.select('#'+first_name)
 	    .append("svg:svg")
 	    .attr("width", w)
 	    .attr("height", h)
 	    .attr('class', 'stat-chart')
 	    .attr('id', name)
-
-	
 
 	var g = vis.append("svg:g")
 	    .attr("transform", "translate(0, 200)");

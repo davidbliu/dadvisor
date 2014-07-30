@@ -19,7 +19,7 @@ Bootstrap(app)
 events = None
 event_store = None
 #
-# 
+# graphs data for all containers running on this host
 #
 @app.route('/', methods=['GET', 'POST'])
 def root():
@@ -40,14 +40,35 @@ def root():
 		for s_key in stats.keys():
 			chart_name = container_name+'::'+s_key
 			data[chart_name] = stats[s_key]
-			if container_name not in charts:
-				charts.append(container_name)
+			if 'container_'+container_name not in charts:
+				charts.append('container_'+container_name)
 	# print data
 	# print data
 	# print 'that was data'
 	return render_template('stat.html', data = json.dumps(data), charts = charts)
 
-
+@app.route('/container_metrics', methods=['GET', 'POST'])
+def get_container_metrics():
+	container_id = str(request.args.get('container_id'))
+	print 'lol'
+	# print container_id
+	collector = dadvisor.load_collector()
+	collector.clean()
+	data = {}
+	charts = []
+	for key in collector.container_stats.keys():
+		container_name = key[0:5]
+		print key
+		print container_id
+		print '....'
+		if key == container_id:
+			stats = collector.container_stats[key].stats
+			for s_key in stats.keys():
+				chart_name = container_name+'::'+s_key
+				data[chart_name] = stats[s_key]
+				if 'container_'+container_name not in charts:
+					charts.append('container_'+container_name)
+	return render_template('stat.html', data = json.dumps(data), charts = charts)
 if __name__ == '__main__':
 	
 	host='localhost'
@@ -64,4 +85,4 @@ if __name__ == '__main__':
 	# print data
 	# print 'that was data'
 	dadvisor.threaded_collect()
-	app.run(port=5555, host=host)
+	app.run(port=5000, host=host)
