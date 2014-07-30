@@ -96,7 +96,9 @@ def get_container_data(container_id, root_path = '/sys/fs' ):
 				if 'cache ' == split[0:6]:
 					cache_stat = split.split(' ')[1]
 	except Exception as failure:
-		print failure
+		# print failure
+		pass
+
 	try:
 		with open(cpuacct_stat_path, 'r') as datafile:
 			data = datafile.read()
@@ -104,7 +106,8 @@ def get_container_data(container_id, root_path = '/sys/fs' ):
 			user_cpuacct_stats = stats_split[0].split(' ')[1]
 			system_cpuacct_stats = stats_split[1].split(' ')[1]
 	except Exception as failure:
-		print failure
+		# print failure
+		pass
 
 
 	
@@ -113,7 +116,7 @@ def get_container_data(container_id, root_path = '/sys/fs' ):
 	cache_stat = int(cache_stat) + rand_i
 	user_cpuacct_stats = int(user_cpuacct_stats) + rand_i
 	system_cpuacct_stats = int(system_cpuacct_stats) + rand_i
-	
+
 	return {'rss_stat':int(rss_stat), 
 			'swap_stat':int(swap_stat),
 			'cache_stat':int(cache_stat), 

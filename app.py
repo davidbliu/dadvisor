@@ -85,4 +85,5 @@ if __name__ == '__main__':
 	# print data
 	# print 'that was data'
 	dadvisor.threaded_collect()
-	app.run(port=5555, host=host)
+	print 'i got here'
+	app.run(port=5139, host=host)
