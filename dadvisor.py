@@ -50,7 +50,7 @@ def load_collector():
 def get_docker_ids_with_daemon():
 	try:
 		docker_client = docker.Client(base_url='unix://var/run/docker.sock',
-	                  version='1.11',
+	                  version='1.10',
 	                  timeout=10)
 	except:
 		docker_client = docker.Client(base_url='unix://var/run/docker.sock',
@@ -77,30 +77,43 @@ def get_docker_ids(root_dir = '/sys/fs'):
 def get_container_data(container_id, root_path = '/sys/fs' ):
 	memory_stat_path = root_path+'/cgroup/memory/docker/'+container_id+'/memory.stat'
 	cpuacct_stat_path = root_path+'/cgroup/cpuacct/docker/'+container_id+'/cpuacct.stat'
-	with open(memory_stat_path, 'r') as datafile:
-		data = datafile.read()
-		stats_split = data.split('\n')
-		# print stats_split
-		for split in stats_split:
-			if 'rss '==split[0:4]:
-				rss_stat = split.split(' ')[1]
-			if 'swap ' == split[0:5]:
-				swap_stat = split.split(' ')[1]
-			if 'cache ' == split[0:6]:
-				cache_stat = split.split(' ')[1]
-	with open(cpuacct_stat_path, 'r') as datafile:
-		data = datafile.read()
-		stats_split = data.split('\n')
-		user_cpuacct_stats = stats_split[0].split(' ')[1]
-		system_cpuacct_stats = stats_split[1].split(' ')[1]
-
-
 	rand_i = int(randint(0,5))
+	rss_stat = rand_i
+	swap_stat = rand_i
+	cache_stat = rand_i
+	user_cpuacct_stats = rand_i
+	system_cpuacct_stats = rand_i
+	try:
+		with open(memory_stat_path, 'r') as datafile:
+			data = datafile.read()
+			stats_split = data.split('\n')
+			# print stats_split
+			for split in stats_split:
+				if 'rss '==split[0:4]:
+					rss_stat = split.split(' ')[1]
+				if 'swap ' == split[0:5]:
+					swap_stat = split.split(' ')[1]
+				if 'cache ' == split[0:6]:
+					cache_stat = split.split(' ')[1]
+	except Exception as failure:
+		print failure
+	try:
+		with open(cpuacct_stat_path, 'r') as datafile:
+			data = datafile.read()
+			stats_split = data.split('\n')
+			user_cpuacct_stats = stats_split[0].split(' ')[1]
+			system_cpuacct_stats = stats_split[1].split(' ')[1]
+	except Exception as failure:
+		print failure
+
+
+	
 	rss_stat = int(rss_stat) + rand_i
 	swap_stat = int(swap_stat) + rand_i
 	cache_stat = int(cache_stat) + rand_i
 	user_cpuacct_stats = int(user_cpuacct_stats) + rand_i
 	system_cpuacct_stats = int(system_cpuacct_stats) + rand_i
+	
 	return {'rss_stat':int(rss_stat), 
 			'swap_stat':int(swap_stat),
 			'cache_stat':int(cache_stat), 
