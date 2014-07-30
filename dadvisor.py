@@ -48,9 +48,14 @@ def load_collector():
 # gets docker ids from docker daemon
 #
 def get_docker_ids_with_daemon():
-	docker_client = docker.Client(base_url='unix://var/run/docker.sock',
-                  version='1.11',
-                  timeout=10) 
+	try:
+		docker_client = docker.Client(base_url='unix://var/run/docker.sock',
+	                  version='1.11',
+	                  timeout=10)
+	except:
+		docker_client = docker.Client(base_url='unix://var/run/docker.sock',
+	                  version='1.10',
+	                  timeout=10)
 	containers = docker_client.containers()
 	container_ids = map(lambda x: x['Id'], containers)
 	# print container_ids
