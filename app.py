@@ -73,10 +73,10 @@ if __name__ == '__main__':
 	
 	# host='localhost'
 	# host = socketimport urllib2
-	host = urllib2.urlopen('http://ip.42.pl/raw').read()
+	# host = urllib2.urlopen('http://ip.42.pl/raw').read()
 
 	# os.system('printenv')
-	# host = socket.gethostbyname(socket.gethostname())
+	host = socket.gethostbyname(socket.gethostname())
 	
 	# subprocess.Popen(["python", '-u', "dadvisor.py"])
 	print 'running your app'
