@@ -5,7 +5,7 @@ docker monitoring tool. this is a __proof of concept__ demonstrating the ease at
 monitors cpu and memory now.
 can be expanded to network stats, etc. anything that isn't application specific
 
-based on this article 
+__based on__ <a href ='http://jpetazzo.github.io/2013/10/08/docker-containers-metrics/'>this article</a>
 
 # Future
 
